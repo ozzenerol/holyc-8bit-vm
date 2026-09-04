@@ -1,14 +1,19 @@
-fun main 0x0000:
+SUB SET_LOC:
+    ADD_SUB  0x0050
+    LOOP     0x0100
+    JMP      MAIN   
+
+SUB MAIN:
     MOVI    R0, #5
     MOVI    R1, #1
     CALL    ADD_SUB         ; push return addr, jump to subroutine
     CLR     R0
     STORE   0x0010, R1
-    JMP     HALT
+    JMP     LOOP
 
-fun ADD_SUB:
+SUB ADD_SUB:
     ADD     R1, R0
     RET                     ; pop return addr, jump back
 
-fun LOOP:
-    JMP     HALT            ; spin forever
+SUB LOOP:
+    JMP     MAIN            ; spin forever

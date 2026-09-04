@@ -1,8 +1,11 @@
 #include "Log.hc"
 #include "Memory.hc"
 #include "Processor.hc"
+#include "Executor.hc"
 
 U0 Main() {
+    LogInit(TRUE, TRUE, TRUE, TRUE);
+
     LogInfo("Hello from 8 Bit Virtual machine made in Holy C!");
 
     Memory *memory = MAlloc(sizeof(Memory));

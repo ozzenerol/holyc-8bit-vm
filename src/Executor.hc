@@ -44,6 +44,12 @@ U8 Executor_LookupOpcode(StrMap *table, U8 *mnemonic) {
 #define MATH_MLP    3
 #define MATH_DIV    4
 
+private U0 Executor_PerformMath(Processor *processor, Memory *memory, U8 mathOp);
+private U0 Executor_PerformMovi(Processor *processor, Memory *memory);
+private U0 Executor_PerformFree(Processor *processor, Memory *memory);
+private U0 Executor_PerformStore(Processor *processor, Memory *memory);
+private U0 Executor_PerformLoad(Processor *processor, Memory *memory);
+
 U0 Executor_Parse(Processor *processor, Memory *memory) {
     if (!processor || !memory) {
         throw("You fucking moronic idiot");
@@ -103,6 +109,58 @@ private U0 Executor_PerformMath(Processor *processor, Memory *memory, U8 mathOp)
     }
 }
 
-private Executor_PerformMovi(Processor *processor, Memory *memory) {
+private U0 Executor_PerformMovi(Processor *processor, Memory *memory) {
+    U8 dest, src;
 
+    try {
+        Memory_Read(memory, processor->PC++, &dest);
+        Memory_Read(memory, processor->PC++, &src);
+        
+        processor->R[dest] = src;
+    } catch {
+        processor->running = FALSE;
+        Common_ThrowError(CONTEXT);
+    }
 }
+
+private U0 Executor_PerformFree(Processor *processor, Memory *memory) {
+    U8 param;
+
+    try {
+        Memory_Read(memory, processor->PC++, &param);
+        
+        processor->R[param] = 0;
+    } catch {
+        processor->running = FALSE;
+        Common_ThrowError(CONTEXT);
+    }
+}
+
+private U0 Executor_PerformStore(Processor *processor, Memory *memory) {
+    U8 dest, src;
+
+    try {
+        Memory_Read(memory, processor->PC++, &dest);
+        Memory_Read(memory, processor->PC++, &src);
+        
+        memory->data[dest] = processor->R[src];
+    } catch {
+        processor->running = FALSE;
+        Common_ThrowError(CONTEXT);
+    }
+}
+
+private U0 Executor_PerformLoad(Processor *processor, Memory *memory) {
+    U8 dest, src;
+
+    try {
+        Memory_Read(memory, processor->PC++, &dest);
+        Memory_Read(memory, processor->PC++, &src);
+
+        processor->R[dest] = memory->data[src];
+    } catch {
+        processor->running = FALSE;
+        Common_ThrowError(CONTEXT);
+    }
+}
+
