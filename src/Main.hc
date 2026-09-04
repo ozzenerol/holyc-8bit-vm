@@ -23,7 +23,4 @@ U0 Main() {
     
     /* Temporary. It will be set to true before executing a program */
     processor->running = TRUE;
-
-    U8 out;
-    Processor_Fetch(processor, memory, &out);
 }
